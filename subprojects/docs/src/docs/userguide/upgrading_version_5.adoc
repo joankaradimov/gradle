@@ -77,6 +77,18 @@ The related APIs in `StartParameter` are now deprecated.
 These methods currently do not work as expected.
 They are being deprecated to avoid confusion.
 
+==== Deprecated plugins
+
+The following bundled plugins are no longer maintained and will be removed in the next major release of Gradle:
+
+- `org.gradle.coffeescript-base`
+- `org.gradle.envjs`
+- `org.gradle.javascript-base`
+- `org.gradle.jshint`
+- `org.gradle.rhino`
+
+Some of these plugins may have replacements on the https://plugins.gradle.org/[Plugin Portal]. 
+
 === Potential breaking changes
 
 ==== Android Gradle Plugin 3.3 and earlier is not supported anymore

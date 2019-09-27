@@ -85,7 +85,7 @@ public class JavaEcosystemVariantDerivationStrategy implements VariantDerivation
                 .withName(prefix + conf.getName())
                 .withAttributes(attributes)
                 .withConstraintsOnly()
-                .withCapabilities(shadowedPlatformCapability);
+                .withCapabilities(ImmutableCapabilities.of(shadowedPlatformCapability));
         if (enforcedPlatform) {
             builder = builder.withForcedDependencies();
         }

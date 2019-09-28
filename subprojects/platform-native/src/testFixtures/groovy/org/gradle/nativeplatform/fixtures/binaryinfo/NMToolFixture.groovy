@@ -42,13 +42,17 @@ class NMToolFixture {
     List<BinaryInfo.Symbol> listSymbols(File binaryFile) {
         def process = "${findExe('nm')} -a -f posix ${binaryFile.absolutePath}".execute(environments, null)
         def lines = process.inputStream.readLines()
+        println("LINES : " + lines)
+        println("ERRORS: " + process.errorStream.text)
         return lines.collect { line ->
+            println(line)
             // Looks like on Linux:
             // _main t 0 0
             //
             // Looks like on Windows (MinGW):
             // main T 0000000000401550
             def splits = line.split(' ')
+            println(splits)
             String name = splits[0]
             char type = splits[1].getChars()[0]
             return new BinaryInfo.Symbol(name, type, Character.isUpperCase(type))

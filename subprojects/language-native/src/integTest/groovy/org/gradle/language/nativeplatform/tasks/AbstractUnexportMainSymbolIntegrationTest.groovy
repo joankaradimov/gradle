@@ -47,6 +47,7 @@ abstract class AbstractUnexportMainSymbolIntegrationTest extends AbstractInstall
     private BinaryInfo.Symbol findMainSymbol(TestFile objectFile) {
         def binary = new NativeBinaryFixture(objectFile, toolChain)
         def symbols = binary.binaryInfo.listSymbols()
+        println symbols
         def mainSymbol = symbols.find({ it.name in mainSymbols })
         assert mainSymbol
         mainSymbol

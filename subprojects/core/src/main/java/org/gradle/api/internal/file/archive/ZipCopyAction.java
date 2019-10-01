@@ -36,6 +36,7 @@ import org.gradle.internal.IoActions;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class ZipCopyAction implements CopyAction {
@@ -61,13 +62,15 @@ public class ZipCopyAction implements CopyAction {
     private final DocumentationRegistry documentationRegistry;
     private final String encoding;
     private final boolean preserveFileTimestamps;
+    private final long timeForZipEntries;
 
-    public ZipCopyAction(File zipFile, ZipCompressor compressor, DocumentationRegistry documentationRegistry, String encoding, boolean preserveFileTimestamps) {
+    public ZipCopyAction(File zipFile, ZipCompressor compressor, DocumentationRegistry documentationRegistry, String encoding, boolean preserveFileTimestamps, Date timeForZipEntries) {
         this.zipFile = zipFile;
         this.compressor = compressor;
         this.documentationRegistry = documentationRegistry;
         this.encoding = encoding;
         this.preserveFileTimestamps = preserveFileTimestamps;
+        this.timeForZipEntries = getValidZipTime(timeForZipEntries);
     }
 
     @Override
@@ -145,6 +148,10 @@ public class ZipCopyAction implements CopyAction {
     }
 
     private long getArchiveTimeFor(FileCopyDetails details) {
-        return preserveFileTimestamps ? details.getLastModified() : CONSTANT_TIME_FOR_ZIP_ENTRIES;
+        return preserveFileTimestamps ? details.getLastModified() : timeForZipEntries;
+    }
+
+    private long getValidZipTime(Date timestamp) {
+        return Math.max(timestamp != null ? timestamp.getTime() : 0L, CONSTANT_TIME_FOR_ZIP_ENTRIES);
     }
 }

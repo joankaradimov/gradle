@@ -32,6 +32,7 @@ import org.gradle.internal.IoActions;
 
 import java.io.File;
 import java.io.OutputStream;
+import java.util.Date;
 
 public class TarCopyAction implements CopyAction {
     /**
@@ -42,16 +43,18 @@ public class TarCopyAction implements CopyAction {
      *
      * The date is January 2, 1970.
      */
-    public static final long CONSTANT_TIME_FOR_TAR_ENTRIES = 86400000;
+    public static final long CONSTANT_TIME_FOR_TAR_ENTRIES = Date.UTC(70, 0, 2, 0, 0, 0);
 
     private final File tarFile;
     private final ArchiveOutputStreamFactory compressor;
     private final boolean preserveFileTimestamps;
+    private final long timeForTarEntries;
 
-    public TarCopyAction(File tarFile, ArchiveOutputStreamFactory compressor, boolean preserveFileTimestamps) {
+    public TarCopyAction(File tarFile, ArchiveOutputStreamFactory compressor, boolean preserveFileTimestamps, Date timeForTarEntries) {
         this.tarFile = tarFile;
         this.compressor = compressor;
         this.preserveFileTimestamps = preserveFileTimestamps;
+        this.timeForTarEntries = getValidTarTime(timeForTarEntries);
     }
 
     @Override
@@ -127,6 +130,10 @@ public class TarCopyAction implements CopyAction {
     }
 
     private long getArchiveTimeFor(FileCopyDetails details) {
-        return preserveFileTimestamps ? details.getLastModified() : CONSTANT_TIME_FOR_TAR_ENTRIES;
+        return preserveFileTimestamps ? details.getLastModified() : timeForTarEntries;
+    }
+
+    private long getValidTarTime(Date timestamp) {
+        return Math.max(timestamp != null ? timestamp.getTime() : 0L, CONSTANT_TIME_FOR_TAR_ENTRIES);
     }
 }

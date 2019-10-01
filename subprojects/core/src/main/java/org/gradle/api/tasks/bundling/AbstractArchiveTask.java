@@ -37,6 +37,7 @@ import org.gradle.util.GUtil;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.util.Date;
 
 /**
  * {@code AbstractArchiveTask} is the base class for all archive tasks.
@@ -55,6 +56,7 @@ public abstract class AbstractArchiveTask extends AbstractCopyTask {
     private final Property<String> archiveClassifier;
     private final Property<Boolean> archivePreserveFileTimestamps;
     private final Property<Boolean> archiveReproducibleFileOrder;
+    private final Property<Date> timeForArchiveEntries;
 
     public AbstractArchiveTask() {
         ObjectFactory objectFactory = getProject().getObjects();
@@ -84,6 +86,8 @@ public abstract class AbstractArchiveTask extends AbstractCopyTask {
 
         archivePreserveFileTimestamps = objectFactory.property(Boolean.class).convention(true);
         archiveReproducibleFileOrder = objectFactory.property(Boolean.class).convention(false);
+
+        timeForArchiveEntries = objectFactory.property(Date.class);
 
         getRootSpec().setDuplicatesStrategy(DuplicatesStrategy.FAIL);
     }
@@ -474,6 +478,37 @@ public abstract class AbstractArchiveTask extends AbstractCopyTask {
      */
     public void setReproducibleFileOrder(boolean reproducibleFileOrder) {
         archiveReproducibleFileOrder.set(reproducibleFileOrder);
+    }
+
+    /**
+     * Specifies an explicit timestamp for archive files
+     * <p>
+     * If {@link #isPreserveFileTimestamps()} is <tt>false</tt> the provided date will be used as a file
+     * timestamp within the produced archive.
+     * Otherwise a default timestamp will be used
+     * </p>
+     *
+     * @since 6.0
+     * @return the file timestamps to use when {@link #isPreserveFileTimestamps()} is false
+     */
+    @Nullable
+    public Date getTimeForArchiveEntries() {
+        return timeForArchiveEntries.getOrNull();
+    }
+
+    /**
+     * Specifies an explicit timestamp for archive files
+     * <p>
+     * If {@link #isPreserveFileTimestamps()} is <tt>false</tt> the provided date will be used as a file
+     * timestamp within the produced archive.
+     * Otherwise a default timestamp will be used.
+     * </p>
+     *
+     * @since 6.0
+     * @param time the file timestamps to use when {@link #isPreserveFileTimestamps()} is false
+     */
+    public void setTimeForArchiveEntries(Date time) {
+        timeForArchiveEntries.set(time);
     }
 
     @Override
